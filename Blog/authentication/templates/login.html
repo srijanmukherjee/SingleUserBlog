@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="{% static 'authentication/css/style.css' %}"/>
+</head>
+<body>
+<div class="container is-flex is-justify-content-center is-align-items-center min-full-height">
+    <form class="card" method="POST" action=".">
+        <div class="card-content">
+            <h1 class="title is-2">Login</h1>
+            {% csrf_token %}
+            {{ form }}
+            <button class="button is-primary is-fullwidth" type="submit">Login</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

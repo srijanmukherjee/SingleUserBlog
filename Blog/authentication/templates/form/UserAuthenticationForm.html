@@ -1,0 +1,19 @@
+{% if form.non_field_errors %}
+    <div class="message is-danger">
+        <div class="message-body">
+            {{ form.non_field_errors }}
+        </div>
+    </div>
+{% endif %}
+
+<div class="input-group">
+    <label for="{{ form.username.id_for_label }}">Username</label>
+    {{ form.username }}
+    {{ form.username.errors }}
+</div>
+
+<div class="input-group">
+    {{ form.password.errors }}
+    <label for="{{ form.password.id_for_label }}">Password</label>
+    {{ form.password }}
+</div>
