@@ -1,0 +1,50 @@
+.blog-post-container {
+    position: relative;
+    /*padding-top: 75px;*/
+    min-height: 100vh;
+    width: 100%;
+}
+
+.sub-nav {
+    /*width: 100%;*/
+    /*height: 65px;*/
+    background: #ffffff;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em 1em;
+    box-shadow: 0 20px 20px -20px #bebebe;
+}
+
+.sub-nav .title,
+.sub-nav p {
+    margin: 0;
+}
+
+
+.editor-content {
+    padding-top: 2em;
+    padding-bottom: 8em;
+}
+
+/** Quill Overrides */
+
+.ql-container {
+    font-size: 20px;
+}
+
+.ql-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.ql-toolbar .ql-formats {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}

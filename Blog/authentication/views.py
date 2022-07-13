@@ -1,19 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views.generic import FormView
 
 from .forms import UserAuthenticationForm
 
 
-def auth(request: HttpRequest):
-    return HttpResponse("you are in the /auth route")
-
-
 class AuthenticationView(FormView):
     template_name = "login.html"
     form_class = UserAuthenticationForm
-    success_url = "/admin2"
+    success_url = reverse_lazy("blog-admin:home")
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -44,4 +41,4 @@ class AuthenticationView(FormView):
 
 def logout_view(request: HttpRequest):
     logout(request)
-    return redirect("auth")
+    return redirect("blog-admin:auth")
