@@ -1,0 +1,17 @@
+.base-container {
+    min-height: 100vh;
+    display: flex;
+    position: relative;
+}
+
+.nav {
+    width: 300px;
+    height: 100vh;
+    background: #282c34;
+}
+
+.base-container .container {
+    flex: 1;
+    height: 100vh;
+    overflow: auto;
+}

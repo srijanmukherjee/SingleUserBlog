@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.0/dist/css/uikit.min.css"/>
+    <link rel="stylesheet" href="{% static 'admin/css/style.css' %}"/>
+    {% block stylesheet %}{% endblock %}
+</head>
+<body>
+
+<div class="base-container">
+    {% include 'nav.html' %}
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.15.0/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.15.0/dist/js/uikit-icons.min.js"></script>
+
+{% block script %}{% endblock %}
+
+</body>
+</html>
