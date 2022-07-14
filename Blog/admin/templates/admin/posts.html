@@ -55,8 +55,61 @@
         {% endif %}
     </div>
 
+    <div id="contextMenu" class="context-menu" style="display: none">
+        <ul class="menu">
+            <li class="edit"><a href="#"><span uk-icon="file-edit" style="margin-right: 10px"></span> Edit</a></li>
+            <li class="preview"><a href="#" target="_blank"><span uk-icon="link" style="margin-right: 10px"></span>
+                Preview</a></li>
+            <li class="publish"><a href="#"><span uk-icon="push" style="margin-right: 10px"></span> Publish</a></li>
+            <li class="archive"><a href="#"><span uk-icon="folder" style="margin-right: 10px"></span> Archive</a></li>
+            <li class="trash"><a href="#"><span uk-icon="trash" style="margin-right: 10px"></span> Delete</a></li>
+        </ul>
+    </div>
+
 {% endblock %}
 
 {% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'admin/css/style.css' %}"/>
     <link rel="stylesheet" href="{% static 'admin/css/posts.css' %}">
+{% endblock %}
+
+{% block script %}
+    <script>
+        document.onclick = hideMenu;
+        document.oncontextmenu = hideMenu;
+        document.querySelectorAll(".post-item").forEach((el) => {
+            el.addEventListener('contextmenu', (e) => {
+                e.stopPropagation();
+                rightClick(e, el);
+            })
+        });
+
+        function hideMenu() {
+            document.getElementById("contextMenu")
+                .style.display = "none"
+            document.querySelector(".post-item.context-menu-active")?.classList.remove("context-menu-active");
+        }
+
+        function showMenu(e, menu) {
+            const left = e.pageX + menu.offsetWidth + 10 >= window.innerWidth ? (e.pageX - menu.offsetWidth) : e.pageX;
+            menu.style.display = 'block';
+            menu.style.left = left + "px";
+            menu.style.top = e.pageY + "px";
+        }
+
+        function rightClick(e, el) {
+            e.preventDefault();
+            document.querySelector(".post-item.context-menu-active")?.classList.remove("context-menu-active");
+            el.classList.add("context-menu-active");
+
+            const slug = el.getAttribute('data-post-slug');
+            const menu = document.getElementById("contextMenu");
+            showMenu(e, menu);
+
+            menu.querySelector(".edit a").href = `/admin/posts/edit/${slug}`;
+            menu.querySelector(".preview a").href = `/admin/post/preview/${slug}`;
+            menu.querySelector(".publish a").href = `/admin/post/publish/${slug}`;
+            menu.querySelector(".archive a").href = `/admin/post/archive/${slug}`;
+        }
+    </script>
 {% endblock %}

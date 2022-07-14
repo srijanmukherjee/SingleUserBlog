@@ -1,7 +1,8 @@
 import json
 
 from django.db import IntegrityError
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, ListView
 
@@ -56,5 +57,9 @@ def save_post(request, post: Post):
     })
 
 
-def preview_post(request):
-    pass
+def preview_post(request, slug: str):
+    try:
+        post = Post.objects.get(slug=slug)
+        return render(request, "admin/preview.html", context={"post": post})
+    except Post.DoesNotExist:
+        return HttpResponse("Post doesn't exist")
