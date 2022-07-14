@@ -30,6 +30,14 @@ class PostListView(ListView):
         return queryset.filter(archived=False)
 
 
+def edit_post(request, slug: str):
+    try:
+        post = Post.objects.get(slug=slug)
+        return render(request, "admin/create.html", context={"post": post})
+    except Post.DoesNotExist:
+        return HttpResponse("Post doesn't exist")
+
+
 @csrf_exempt
 @with_post
 def save_post(request, post: Post):

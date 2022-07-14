@@ -8,9 +8,14 @@ export default class BlogPost {
         this.editor.onPreview.subscribe(this.preview);
     }
 
-    savePost({ event, post }) {
+    savePost({event, post}) {
         this.editor.lock();
         this.editor.removeError('title');
+
+        console.log({
+            pk: this.postID,
+            ...this.editor.getPost()
+        })
 
         fetch(`${API_URL}/save`, {
             method: 'POST',
@@ -41,5 +46,10 @@ export default class BlogPost {
         if (err.title) {
             this.editor.showError('title', err.title);
         }
+    }
+
+    setContent(content) {
+        this.editor.setPost(content);
+        this.postID = content.pk;
     }
 }

@@ -1,4 +1,4 @@
-const { Subject } = rxjs;
+const {Subject} = rxjs;
 
 
 const EDITOR_TOOLBAR_OPTIONS = [
@@ -23,7 +23,10 @@ const EDITOR_OPTIONS = {
     theme: 'snow',
     modules: {
         syntax: true,
-        toolbar: EDITOR_TOOLBAR_OPTIONS
+        toolbar: EDITOR_TOOLBAR_OPTIONS,
+        imageResize: {
+            modules: ['Resize', 'DisplaySize', 'Toolbar']
+        }
     }
 }
 
@@ -67,7 +70,7 @@ export class BlogPostEditor {
         this.keywordsInput.addEventListener('keyup', () => this.updateState());
 
         this.saveBtn.addEventListener('click', (event) => {
-            this.onSave.next({ event, post: this.getPost() });
+            this.onSave.next({event, post: this.getPost()});
         })
     }
 
@@ -78,14 +81,14 @@ export class BlogPostEditor {
         this.publishBtn.disabled = true;
 
         const editorHasContent = this.editor.getContents().ops.length > 1 ||
-                                 this.editor.getContents().ops[0].insert.trim() != "";
+            this.editor.getContents().ops[0].insert.trim() != "";
 
         const shouldSave = editorHasContent ||
-                           this.titleInput.value.trim() != "" ||
-                           this.keywordsInput.value.trim() != "";
+            this.titleInput.value.trim() != "" ||
+            this.keywordsInput.value.trim() != "";
 
         const shouldPublishAndPreview = editorHasContent &&
-                                        this.titleInput.value.trim() != "";
+            this.titleInput.value.trim() != "";
 
         this.saveBtn.disabled = !shouldSave;
         this.publishBtn.disabled = !shouldPublishAndPreview;
@@ -101,7 +104,7 @@ export class BlogPostEditor {
     }
 
     setPost(post) {
-        const { title, keywords, content } = post;
+        const {title, keywords, content} = post;
 
         this.titleInput.value = title ?? "";
         this.keywordsInput.value = keywords ?? "";
