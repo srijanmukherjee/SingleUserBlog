@@ -3,7 +3,7 @@ import json
 from django.db import IntegrityError
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from api.models import Post
 from .decorators import with_post
@@ -15,6 +15,18 @@ class Home(TemplateView):
 
 class CreatePostView(TemplateView):
     template_name = "admin/create.html"
+
+
+class PostListView(ListView):
+    template_name = "admin/posts.html"
+    model = Post
+    context_object_name = "posts"
+    paginate_by = 10
+    ordering = ['-published_on']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(archived=False)
 
 
 @csrf_exempt

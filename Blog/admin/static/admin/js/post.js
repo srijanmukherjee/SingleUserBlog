@@ -30,7 +30,7 @@ export default class BlogPost {
             .catch(console.error)
             .finally(() => {
                 this.editor.unlock();
-            })
+            });
     }
 
     preview() {

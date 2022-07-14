@@ -1,0 +1,18 @@
+<div class="post-item">
+    <div class="post-item-date">
+        {{ post.last_update | date }}
+    </div>
+    <div class="post-item-state">
+        {% if not post.published %}
+            <span class="uk-label uk-text-small uk-border-rounded"
+                  style="padding: .3em .5em; font-size: .7em">Draft</span>
+        {% else %}
+            <span class="uk-label uk-label-success uk-text-small uk-border-rounded"
+                  style="padding: .3em .5em; font-size: .7em">Published</span>
+        {% endif %}
+
+    </div>
+    <div class="post-item-title">
+        <a class="uk-link" href="/admin/post/preview/{{ post.slug }}" target="_blank">{{ post.title | safe }}</a>
+    </div>
+</div>
