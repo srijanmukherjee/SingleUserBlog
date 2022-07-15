@@ -62,7 +62,8 @@
                 Preview</a></li>
             <li class="publish uk-hidden"><a href="#"><span uk-icon="push" style="margin-right: 10px"></span>
                 Publish</a></li>
-            <li class="archive"><a href="#"><span uk-icon="folder" style="margin-right: 10px"></span> Archive</a></li>
+            <li class="archive uk-hidden"><a href="#"><span uk-icon="folder" style="margin-right: 10px"></span> Archive</a>
+            </li>
             <li class="trash"><a href="#"><span uk-icon="trash" style="margin-right: 10px"></span> Delete</a></li>
         </ul>
     </div>
@@ -87,6 +88,8 @@
 
         const menu = document.querySelector("#contextMenu");
         const publishLink = menu.querySelector(".publish a");
+        const archiveLink = menu.querySelector(".archive a");
+
         publishLink.addEventListener("click", (e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -127,6 +130,47 @@
                 });
         })
 
+        archiveLink.addEventListener("click", (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            const url = `${archiveLink.href}`;
+
+            fetch(url)
+                .then((res) => res.json())
+                .then((res) => {
+                    if (res.error) {
+                        return UIkit.notification({
+                            message: res.error,
+                            pos: 'bottom-right',
+                            status: 'danger',
+                            timeout: 2000
+                        })
+                    }
+                    UIkit.notification({
+                        message: `<span uk-icon='icon: check'></span> ${res.message}`,
+                        pos: 'bottom-right',
+                        status: 'success',
+                        timeout: 2000
+                    });
+
+                    publishLink.postRef.setAttribute("data-published", "True");
+                    const label = publishLink.postRef.querySelector(".post-item-state .uk-label");
+                    label.classList.add("uk-label-warning");
+                    label.innerText = "Archived";
+                    publishLink.postRef.setAttribute("data-archived", "True");
+                    hideMenu();
+                })
+                .catch(() => {
+                    UIkit.notification({
+                        message: "Something went terribly wrong",
+                        pos: 'bottom-right',
+                        status: 'danger',
+                        timeout: 2000
+                    })
+                });
+        })
+
         function hideMenu() {
             menu.style.display = "none"
             document.querySelector(".post-item.context-menu-active")?.classList.remove("context-menu-active");
@@ -146,15 +190,20 @@
 
             const slug = el.getAttribute('data-post-slug');
             const isPublished = el.getAttribute('data-published') === "True";
+            const isArchived = el.getAttribute('data-archived') !== null;
             showMenu(e);
 
             menu.querySelector(".publish").classList.toggle('uk-hidden', isPublished);
+
+            // only show for published posts
+            menu.querySelector(".archive").classList.toggle("uk-hidden", !isPublished || isArchived);
 
             menu.querySelector(".edit a").href = `/admin/post/edit/${slug}`;
             menu.querySelector(".preview a").href = `/admin/post/preview/${slug}`;
             menu.querySelector(".publish a").href = `/admin/post/publish/${slug}`;
             menu.querySelector(".publish a").postRef = el;
             menu.querySelector(".archive a").href = `/admin/post/archive/${slug}`;
+            menu.querySelector(".archive a").postRef = el;
         }
     </script>
 {% endblock %}

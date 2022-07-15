@@ -84,4 +84,10 @@ def publish_post(request, slug: str):
 
 
 def archive_post(request, slug: str):
-    pass
+    try:
+        post = Post.objects.get(slug=slug)
+        post.archived = True
+        post.save()
+        return JsonResponse({"message": "Post archived"})
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post does not exist"}, status=404)
