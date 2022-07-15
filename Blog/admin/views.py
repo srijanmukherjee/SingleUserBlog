@@ -71,3 +71,17 @@ def preview_post(request, slug: str):
         return render(request, "admin/preview.html", context={"post": post})
     except Post.DoesNotExist:
         return HttpResponse("Post doesn't exist")
+
+
+def publish_post(request, slug: str):
+    try:
+        post = Post.objects.get(slug=slug)
+        post.published = True
+        post.save()
+        return JsonResponse({"message": "Post published"})
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post does not exist"}, status=404)
+
+
+def archive_post(request, slug: str):
+    pass

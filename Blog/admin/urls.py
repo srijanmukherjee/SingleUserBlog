@@ -14,4 +14,5 @@ urlpatterns = [
     path('post/save', login_required(views.save_post, login_url=AUTH_URL), name='save-post'),
     path('post/edit/<str:slug>', login_required(views.edit_post, login_url=AUTH_URL), name='edit-post'),
     path('post/preview/<str:slug>', login_required(views.preview_post, login_url=AUTH_URL), name='preview-post'),
+    path('post/publish/<str:slug>', login_required(views.publish_post, login_url=AUTH_URL), name='publish-post')
 ]

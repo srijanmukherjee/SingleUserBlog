@@ -60,7 +60,8 @@
             <li class="edit"><a href="#"><span uk-icon="file-edit" style="margin-right: 10px"></span> Edit</a></li>
             <li class="preview"><a href="#" target="_blank"><span uk-icon="link" style="margin-right: 10px"></span>
                 Preview</a></li>
-            <li class="publish"><a href="#"><span uk-icon="push" style="margin-right: 10px"></span> Publish</a></li>
+            <li class="publish uk-hidden"><a href="#"><span uk-icon="push" style="margin-right: 10px"></span>
+                Publish</a></li>
             <li class="archive"><a href="#"><span uk-icon="folder" style="margin-right: 10px"></span> Archive</a></li>
             <li class="trash"><a href="#"><span uk-icon="trash" style="margin-right: 10px"></span> Delete</a></li>
         </ul>
@@ -84,13 +85,54 @@
             })
         });
 
+        const menu = document.querySelector("#contextMenu");
+        const publishLink = menu.querySelector(".publish a");
+        publishLink.addEventListener("click", (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            const url = `${publishLink.href}`;
+
+            fetch(url)
+                .then((res) => res.json())
+                .then((res) => {
+                    if (res.error) {
+                        return UIkit.notification({
+                            message: res.error,
+                            pos: 'bottom-right',
+                            status: 'danger',
+                            timeout: 2000
+                        })
+                    }
+                    UIkit.notification({
+                        message: `<span uk-icon='icon: check'></span> ${res.message}`,
+                        pos: 'bottom-right',
+                        status: 'success',
+                        timeout: 2000
+                    });
+
+                    publishLink.postRef.setAttribute("data-published", "True");
+                    const label = publishLink.postRef.querySelector(".post-item-state .uk-label");
+                    label.classList.add("uk-label-success");
+                    label.innerText = "Published";
+                    hideMenu();
+                })
+                .catch(() => {
+                    UIkit.notification({
+                        message: "Something went terribly wrong",
+                        pos: 'bottom-right',
+                        status: 'danger',
+                        timeout: 2000
+                    })
+                });
+        })
+
         function hideMenu() {
-            document.getElementById("contextMenu")
-                .style.display = "none"
+            menu.style.display = "none"
             document.querySelector(".post-item.context-menu-active")?.classList.remove("context-menu-active");
         }
 
-        function showMenu(e, menu) {
+        function showMenu(e) {
             const left = e.pageX + menu.offsetWidth + 10 >= window.innerWidth ? (e.pageX - menu.offsetWidth) : e.pageX;
             menu.style.display = 'block';
             menu.style.left = left + "px";
@@ -103,12 +145,15 @@
             el.classList.add("context-menu-active");
 
             const slug = el.getAttribute('data-post-slug');
-            const menu = document.getElementById("contextMenu");
-            showMenu(e, menu);
+            const isPublished = el.getAttribute('data-published') === "True";
+            showMenu(e);
+
+            menu.querySelector(".publish").classList.toggle('uk-hidden', isPublished);
 
             menu.querySelector(".edit a").href = `/admin/post/edit/${slug}`;
             menu.querySelector(".preview a").href = `/admin/post/preview/${slug}`;
             menu.querySelector(".publish a").href = `/admin/post/publish/${slug}`;
+            menu.querySelector(".publish a").postRef = el;
             menu.querySelector(".archive a").href = `/admin/post/archive/${slug}`;
         }
     </script>
