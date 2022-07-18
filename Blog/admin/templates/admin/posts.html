@@ -64,9 +64,22 @@
                 Publish</a></li>
             <li class="archive uk-hidden"><a href="#"><span uk-icon="folder" style="margin-right: 10px"></span> Archive</a>
             </li>
-            <li class="trash"><a href="#"><span uk-icon="trash" style="margin-right: 10px"></span> Delete</a></li>
+            <li class="trash"><a href="#delete-post-confirmation-modal" uk-toggle><span uk-icon="trash"
+                                                                                        style="margin-right: 10px"></span>
+                Delete</a>
+            </li>
         </ul>
     </div>
+
+    <div id="delete-post-confirmation-modal" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <h2 class="uk-modal-title">Are you sure?</h2>
+            <button class="uk-button uk-button-danger" id="deletePostBtn">YES</button>
+            <button class="uk-modal-close uk-button">NO</button>
+        </div>
+    </div>
+
+
 
 {% endblock %}
 
@@ -171,6 +184,53 @@
                 });
         })
 
+        document.querySelector("#deletePostBtn").addEventListener("click", (event) => {
+            if (!event.target.postRef) return false;
+            const post = event.target.postRef;
+            const slug = post.getAttribute("data-post-slug");
+
+            UIkit.notification({
+                message: "Deleting post",
+                pos: 'bottom-right',
+                timeout: 2000
+            });
+
+            UIkit.modal("#delete-post-confirmation-modal").hide();
+
+            fetch(`http://${window.location.host}/admin/post/delete/${slug}`)
+                .then((res) => res.json())
+                .then(res => {
+                    if (res.error) {
+                        return UIkit.notification({
+                            message: res.error,
+                            status: 'danger',
+                            pos: 'bottom-right',
+                            timeout: 2000
+                        });
+                    }
+
+                    UIkit.notification({
+                        message: res.message,
+                        status: 'success',
+                        pos: 'bottom-right',
+                        timeout: 2000
+                    });
+
+                    const label = post.querySelector(".post-item-state .uk-label");
+                    label.innerText = "deleted";
+                    label.classList.add("uk-label-danger");
+                })
+                .catch((_) => {
+                    return UIkit.notification({
+                        message: "Something went wrong",
+                        status: 'danger',
+                        pos: 'bottom-right',
+                        timeout: 2000
+                    });
+                })
+
+        })
+
         function hideMenu() {
             menu.style.display = "none"
             document.querySelector(".post-item.context-menu-active")?.classList.remove("context-menu-active");
@@ -204,6 +264,7 @@
             menu.querySelector(".publish a").postRef = el;
             menu.querySelector(".archive a").href = `/admin/post/archive/${slug}`;
             menu.querySelector(".archive a").postRef = el;
+            document.querySelector("#deletePostBtn").postRef = el;
         }
     </script>
 {% endblock %}

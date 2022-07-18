@@ -91,3 +91,12 @@ def archive_post(request, slug: str):
         return JsonResponse({"message": "Post archived"})
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post does not exist"}, status=404)
+
+
+def delete_post(request, slug: str):
+    try:
+        post = Post.objects.get(slug=slug)
+        post.delete()
+        return JsonResponse({"message": "Post deleted"})
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post does not exist"}, status=404)
